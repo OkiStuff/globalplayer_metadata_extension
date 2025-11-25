@@ -1,0 +1,24 @@
+{
+    "manifest_version": 3,
+    "name": "GlobalPlayer.com Metadata Fixer",
+    "version": "1.0.0",
+    "description": "This extension aims to replace the media session metadata reported by GlobalPlayer.com with more detailed information",
+    "permissions": [],
+    "host_permissions": ["https://www.globalplayer.com/*"],
+    "content_scripts":
+    [
+        {
+            "matches": ["https://www.globalplayer.com/*"],
+            "js": ["src/metadata_override_injector.js"],
+            "run_at": "document_start"
+        }
+    ],
+
+    "web_accessible_resources":
+    [
+        {
+            "matches": ["https://www.globalplayer.com/*"],
+            "resources": ["src/metadata_override_extension.js"]
+        }
+    ]
+}
