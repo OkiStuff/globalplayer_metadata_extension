@@ -1,7 +1,17 @@
+const createMediaImageFromImageElement = (img, type) =>
+{
+    return {
+        src: img.src,
+        sizes: img.sizes,
+        type: type
+    };
+}
+
 const updateMetadata = () =>
 {
     const playbar = document.querySelector("[data-testid=\"playbar\"]");
     const currentPlayingInfo = playbar.querySelector("[data-testid=\"show-info-title\"]");
+    const artworkImage = playbar.querySelector("img");
 
     const info = currentPlayingInfo.getElementsByTagName("span");
     console.log(info);
@@ -14,7 +24,7 @@ const updateMetadata = () =>
         console.log(title);
         console.log(artist);
 
-        navigator.mediaSession.metadata = new MediaMetadata({ title: title, artist: artist });
+        navigator.mediaSession.metadata = new MediaMetadata({ title: title, artist: artist, artwork: [createMediaImageFromImageElement(artworkImage, "image/jpeg")] });
         console.log(navigator.mediaSession.metadata);
     }
 
@@ -47,33 +57,6 @@ window.addEventListener("load", () =>
         }
     });
 
-    const playerObserver = new MutationObserver((mutations) =>
-    {
-        for (const mut of mutations)
-        {
-            mut.addedNodes.forEach((v, i, _) =>
-            {
-                if (v instanceof HTMLElement)
-                {
-                    if (v.tagName == "VIDEO")
-                    {
-                        if (v instanceof HTMLVideoElement)
-                        {
-                            console.log("Got video element");
-                            v.addEventListener("play", () =>
-                            {
-                                console.log("Updating metadata on play");
-                                updateMetadata();
-                            });
-
-                            playerObserver.disconnect();
-                        }
-                    }
-                }
-            });
-        }
-    });
-
     const globalplayer = document.getElementById("globalplayer");
 
     if (globalplayer)
@@ -82,5 +65,4 @@ window.addEventListener("load", () =>
     }
 
     playbarObserver.observe(currentPlayingInfo, { attributes: true, childList: true });
-    playerObserver.observe(globalplayer, { childList: true, subtree: true });
 });
